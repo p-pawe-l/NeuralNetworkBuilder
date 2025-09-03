@@ -25,7 +25,15 @@ class layer:
                 
         @property
         def neurons(self) -> list[neuron.neuron]:
-                return self._neurons       
+                return self._neurons   
+        @property
+        def inputs(self) -> list[np.float16]:
+                l_inps: list[np.float16] = []
+                
+                for n in self._neurons:
+                        l_inps.append(n.input)
+                
+                return l_inps
         
         def relu(self) -> None:
                 if self._is_input_layer:
@@ -137,6 +145,10 @@ class layer:
                                         inp = inp + ne.input * w
                                 
                                 n.set_input(inp)
+        
+        def calc(self) -> None:
+                for n in self._neurons:
+                        n.calculate()
                                         
                  
                 

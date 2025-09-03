@@ -24,6 +24,8 @@ class neural_network:
                 self._input_layer = self._layers[0]
                 self._output_layer = self._layers[-1]
                 
+                self._net_inputs: list[np.float16] = []
+                
                 for ii in range(network_size - 1):
                         self._layers[ii].set_next(self._layers[ii + 1])
                         
@@ -59,4 +61,6 @@ class neural_network:
                 
                 for l in self._layers:
                         l.call()
+                        l.apply_biases()
+                        l.calc()
                         

@@ -19,15 +19,19 @@ class neuron:
         @property
         def output(self) -> np.float16:
                 return self._output
+        
         @property
         def input(self) -> np.float16:
                 return self._input
+        
         @property
         def bias(self) -> np.float16:
                 return self._bias
+        
         @property
         def gradient(self) -> np.float16:
                 return self._gradient
+        
         @property
         def weights(self) -> list[np.float16]:
                 return self._weights
@@ -38,18 +42,19 @@ class neuron:
         
         def set_activation_function(self, activation_function) -> None:
                 self._activation_function = activation_function
+        
         def set_input(self, input: np.float16) -> None:
                 self._input = input
+        
         def set_bias(self, bias: np.float16) -> None:
                 self._bias = bias
+        
         def set_gradient(self, gradient: np.float16) -> None:
                 self._gradient = gradient
-                
-        def set_input(self, input: np.float16) -> None:
-                self._input = input
                 
         def calculate(self) -> None:
                 if self._activation_function:
                         self._output = self._activation_function(self._input)
+                
                 else:
-                        raise NoActivationFunctionError            
+                        self._output = self._input            
