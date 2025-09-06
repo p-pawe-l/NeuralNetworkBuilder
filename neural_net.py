@@ -1,66 +1,95 @@
-import layer
-import neuron
-import numpy as np
+import layer_dir.layer_factory as lf
+import layer_dir.layer as layer
+import numpy
 
-class WrongArchitectureError(Exception):
+class IncorrectArchitectureError(Exception):
         pass
 
-class neural_network:
-        def __init__(self, architecture: list[int]) -> None:
-                network_size: int = len(architecture)
+class IncorrectUnitsNumberError(Exception):
+        pass
+
+class architecture_component:
+        def __init__(self, units: int, activation_function = None) -> None:
+                if units < 0:
+                        raise IncorrectUnitsNumberError
                 
-                if network_size < 2:
-                        raise WrongArchitectureError
-                
-                self._layers: list[layer.layer] = []
-                
-                for i in range(network_size):
-                        layer_size: int = architecture[i]
-                        layer_neurons: list[neuron.neuron] = [neuron.neuron() for _ in range(layer_size)]
-                        
-                        new_layer: layer.layer = layer.layer(layer_neurons)                        
-                        self._layers.append(new_layer)
-                                
-                self._input_layer = self._layers[0]
-                self._output_layer = self._layers[-1]
-                
-                self._net_inputs: list[np.float16] = []
-                
-                for ii in range(network_size - 1):
-                        self._layers[ii].set_next(self._layers[ii + 1])
-                        
-                for iii in range(network_size):
-                        l: layer.layer = self._layers[iii]
-                        
-                        if iii == 0:
-                                l.inp()
-                                l.init_weights()
-                        elif iii == (network_size - 1):
-                                l.out()
-                                l.sigmoid()
-                        else:
-                                l.init_weights()
-                                l.relu()
-                                
-        @property
-        def layers(self) -> list[layer.layer]:
-                return self._layers
-        @property
-        def input_layer(self) -> layer.layer:
-                return self._input_layer
-        @property
-        def output_layer(self) -> layer.layer:
-                return self._output_layer
+                self._units: int = units
+                self._activation_function = activation_function
         
         @property
-        def network_output(self) -> list[np.float16]:
-                return self._output_layer.get_output()
+        def units(self) -> int:
+                return self._units
+        @property
+        def activation_function(self):
+                return self._activation_function
+
+
+class neural_network:
+        def __init__(self, archtitecture: list[architecture_component]) -> None:
+                if len(archtitecture) < 2:
+                        raise IncorrectArchitectureError
                 
-        def front_prop(self, input: list[np.float16]) -> None:
-                self._input_layer.give_input(input)
+                self._architecture: list[architecture_component] = archtitecture
                 
-                for l in self._layers:
-                        l.call()
-                        l.apply_biases()
-                        l.calc()
+                self._input_layer: layer.input_layer | None = None
+                self._hidden_layers: list[layer.hidden_layer] = []
+                self._output_layer: layer.output_layer | None = None
+                
+                self._net_output: numpy.ndarray | None = None
+        
+        
+        @property
+        def input_layer(self) -> layer.input_layer:
+                return self._input_layer
+        @property
+        def hidden_layers(self) -> list[layer.hidden_layer]:
+                return self._hidden_layers
+        @property
+        def output_layer(self) -> layer.output_layer:
+                return self._output_layer
+        
+                
+        def build_input_layer(self) -> None:
+                input_layer_input_size: int = self._architecture[0].units
+                input_layer_output_size: int = self._architecture[1].units
+                
+                self._input_layer = lf.layer_factor.build_input_layer(
+                        input_size=input_layer_input_size,
+                        output_size=input_layer_output_size
+                )
+                
+        def build_hidden_layers(self) -> None:
+                control_point: int = 1
+                itteration_number: int = len(self._architecture) - 2
+                
+                for _ in range(itteration_number):
+                        hidden_layer_input_size: int = self._architecture[control_point].units
+                        hidden_layer_output_size: int = self._architecture[control_point + 1].units
+                        hidden_layer_activation_function = self._architecture[control_point].activation_function
                         
+                        control_point += 1
+                        
+                        builded_hidden_layer: layer.hidden_layer = lf.layer_factor.build_hidden_layer(
+                                input_size=hidden_layer_input_size,
+                                output_size=hidden_layer_output_size,
+                                activation_function=hidden_layer_activation_function
+                        )    
+                        
+                        self._hidden_layers.append(builded_hidden_layer)            
+        
+        def build_output_layer(self) -> None:
+                output_layer_input_size: int = self._architecture[-1].units
+                output_layer_activation_function = self._architecture[-1].activation_function
+                
+                self._output_layer = lf.layer_factor.build_output_layer(
+                        input_size=output_layer_input_size,
+                        activation_function=output_layer_activation_function
+                )        
+        
+        
+                
+                
+                                
+                
+                
+                
