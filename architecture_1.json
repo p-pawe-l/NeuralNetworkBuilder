@@ -1,0 +1,16 @@
+{
+        "input_layer": {
+                "units": 5
+        },
+        "hidden_layers": [
+                {
+                        "units": 4,
+                        "activation_function": "relu"
+                }
+        ],
+        "output_layer": {
+                "units": 3,
+                "activation_function": "sigmoid"
+        }
+        
+}

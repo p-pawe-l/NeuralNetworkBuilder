@@ -71,6 +71,12 @@ class neural_network:
                         activation_function=output_layer_activation_function
                 )        
         
+        # temporary function -> going to be implemented in neural factory! 
+        def build(self) -> None:
+                self.build_input_layer()
+                self.build_hidden_layers()
+                self.build_output_layer()
+        
         
         def front_propagation(self, input_array: numpy.ndarray) -> None:
                 self._input_layer.front(user_input_array=input_array)

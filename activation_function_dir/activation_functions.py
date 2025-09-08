@@ -2,11 +2,11 @@ import numpy
 
 class relu_activation_function: 
         @staticmethod
-        def relu(x):
+        def activation(x):
                 return numpy.maximum(0, x)
         
         @staticmethod
-        def relu_derivative(x):
+        def derivative(x):
                 dx = numpy.array(x, copy = True)
                 dx[dx <= 0] = 0
                 dx[dx > 0] = 1
@@ -14,9 +14,9 @@ class relu_activation_function:
         
 class sigmoid_activation_function:
         @staticmethod
-        def sigmoid(x):
+        def activation(x):
                 return (1 / (1 + numpy.exp(-x)))
         
         @staticmethod
-        def sigmoid_derivative(x):
+        def derivative(x):
                 return sigmoid_activation_function.sigmoid(x) * (1 - sigmoid_activation_function.sigmoid(x))
