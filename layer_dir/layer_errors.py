@@ -28,3 +28,13 @@ class EmptyPostActivationSumMatrixError(Exception):
         """
         """
         pass
+
+class ParametersInitializationError(Exception):
+        """
+        """
+        pass
+
+class NoActivationFunctionError(Exception):
+        """
+        """
+        pass

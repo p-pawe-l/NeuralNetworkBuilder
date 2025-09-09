@@ -186,82 +186,170 @@ class hidden_layer:
         def set_layer_output_matrix(self, layer_output_matrix: numpy.ndarray) -> None:
                 """Sets the final output matrix of the layer."""
                 self._layer_output_array = layer_output_matrix
-
+                
+                
+        
+        def init_weights(self) -> None:
+                # Checking if outgoing weights are not initialized
+                if not self.outgoing_weights:
+                        # Creating random value matrix with provided input and output size
+                        initialized_weights: numpy.ndarray = numpy.random.randn(self.input_size, self.output_size)
+                        
+                        # Assigning newly initiazlied weights to outgoing weights attrribute
+                        self.set_outgoing_weights(initialized_weights)
+                else:
+                        raise layer_errors.ParametersInitializationError               
+                
+        def init_biases(self) -> None:
+                # Checking if biases are not initialized
+                if not self.biases:
+                        # Creating zero value matrix with provided input size
+                        initialized_biases: numpy.ndarray = numpy.zeros(self.input_size)
+                        
+                        # Assigning newly created biases to biases attribute
+                        self.set_biases(initialized_biases)
+                else:
+                        raise layer_errors.ParametersInitializationError
+                
+        """
+        Helper method to initialize paramters using single function
+        """
+        def init_parameters(self) -> None:
+                # Initializing weights
+                self.init_weights()
+                
+                # Initializing biases
+                self.init_biases()
+                
+                
+        def reset_weights(self) -> None:
+                if self.outgoing_weights:
+                        # Creating new random value matrix with weights
+                        new_random_weights: numpy.ndarray = numpy.random.randn(self.input_size, self.output_size)
+                        
+                        # Assigning this matrix to layer`s weights
+                        self.set_outgoing_weights(new_random_weights)
+                else:
+                        """
+                        ERROR PURPOSE:
+                        Error informs user that weights parameter shold be initialized before trying to reseting it
+                        """
+                        raise layer_errors.ParametersInitializationError
+                
+        def reset_biases(self) -> None:
+                if self.biases:
+                        # Creating new zero value matrix with biases
+                        new_biases: numpy.ndarray = numpy.zeros(self.input_size)
+                        
+                        # Assigning this matrix to layer`s biases
+                        self.set_biases(new_biases)
+                else:
+                        """
+                        ERROR PURPOSE:
+                        Error informs user that biases paramater shuold be initiazlied before trying to reseting it
+                        """
+                        layer_errors.ParametersInitializationError
+        
+        """
+        Helper method to reset paramaters using single function
+        """                
+        def reset_parameters(self) -> None:
+                self.reset_weights()
+                self.reset_biases()
+                
+                
         def apply_biases(self) -> None:
                 """Applies biases to the layer's input array."""
+                
                 # Checking if Biases Matrix and Layer Input Matrix are assigned correctly
                 if self.biases and self.layer_input_array:
                         # Applying (Summing) Biases to Layer Input Matrix
                         PRE_ACTIVATION_MATRIX: numpy.ndarray = self.layer_input_array + self.biases
+                        
                         # Assigning the result to Pre Activation Matrix attribute
-                        self.set_pre_activation_matrix(
-                                pre_activation_matrix=PRE_ACTIVATION_MATRIX)
+                        self.set_pre_activation_matrix(pre_activation_matrix=PRE_ACTIVATION_MATRIX)
 
         def activate(self) -> None:
                 """Applies the activation function to the pre-activation matrix."""
+                
                 # Cheking if Pre Activation Matrix is assigned correctly
                 if self.pre_activation_matrix:
                         # Transofrming Pre Activation Matrix into Post Activation Matrix 
                         # with provided activation function
                         POST_ACTIVATION_MATRIX: numpy.ndarray = self.activation_function.activate(self.pre_activation_matrix)
+                        
                         # Assigning the result for Post Activation Matrix attribute
-                        self.set_post_activation_matrix(
-                                post_activation_matrix=POST_ACTIVATION_MATRIX)
+                        self.set_post_activation_matrix(post_activation_matrix=POST_ACTIVATION_MATRIX)
 
         def layer_front_propagation(self) -> None:
                 """Performs a single step of forward propagation for the layer."""
+                
                 # Applying biases for Layer Input Matrix
                 self.apply_biases()
+                
                 # Activating Layer Input Matrix with activation function
                 # and assigning the result of it to Pre Activation Matrix
                 self.activate()
 
                 # Calculating Linear Output for next layer in our Neural Network
                 LINEAR_OUTPUT: numpy.ndarray = numpy.dot(self.post_activation_matrix, self.outgoing_weights)
+                
                 # Assigning the result of Matrix multiplication to Layer Output Matrix attribute
                 # Layer Output Matrix will be used and Layer Input Matrix in next layer of our neural network
-                self.set_layer_output_matrix(
-                        layer_output_matrix=LINEAR_OUTPUT)
+                self.set_layer_output_matrix(layer_output_matrix=LINEAR_OUTPUT)
                 
         
 class output_layer:
         def __init__(self, input_size: int, activation_function) -> None:
+                # Type of our layer
                 self._type = 'output'
                 
+                # Activation function for output layer in our neural network
                 self._activation_function = activation_function
+                # Input size of output layer in our neural network
+                # Input size can be interpretted as number of perceptrons in output layer
                 self._input_size: int = input_size
                 
+                # Biases Matrix that contains values for biases for each perceptron in output layer
                 self._biases: numpy.ndarray = numpy.array([])
                         
+                # Input Matrix that contains input values for each perceptron in output layer
                 self._layer_input_array: numpy.ndarray = numpy.array([])   
+                
+                # Pre Activation Matrix that contains values after calculations on each perceptron
+                # before transforming them by output layer`s activation function
                 self._pre_activation_output_array: numpy.ndarray = numpy.array([])
+                # Post Actication Matrix that contains values after calculations on each perceptron
+                # and addiotionally this values in this matrix are transformed by output layer`s activation function 
                 self._post_activation_output_array : numpy.ndarray = numpy.array([])
         
         
+        """
+        Getters method
+        """
         @property
-        def id(self) -> str:
+        def layer_type(self) -> str:
                 return self._type
         @property
-        def layer_input_array(self) -> numpy.ndarray:
+        def activation_function(self):
+                return self._activation_function
+        @property
+        def input_size(self) -> int:
+                return self._input_size
+        @property
+        def biases(self) -> numpy.ndarray:
+                return self._biases
+        @property
+        def layer_input_matrix(self) -> numpy.ndarray:
                 return self._layer_input_array
         @property
-        def pre_activation_output(self) -> numpy.ndarray:
+        def pre_activation_matrix(self) -> numpy.ndarray:
                 return self._pre_activation_output_array
         @property
-        def post_activation_output_array(self) -> numpy.ndarray:
+        def post_activation_matrix(self) -> numpy.ndarray:
                 return self._post_activation_output_array
 
-        def init_paramaters(self) -> None:
-                self._biases = numpy.ones(self._input_size)
 
-                
-        def calcualte_output(self, layer_input_array: numpy.ndarray) -> None:
-                self._pre_activation_output_array = layer_input_array + self._biases
-                
-                self._layer_input_array = layer_input_array
-                
-        def activate(self) -> None:
-                if self._activation_function:
-                        self._post_activation_output_array = self._activation_function(self._pre_activation_output_array)
-                else:
-                        raise NoActivationFunctionError
+        # Needs implementaion
+        def init_biases(self) -> None:
+                return None
