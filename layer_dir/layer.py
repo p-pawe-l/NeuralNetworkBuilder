@@ -75,10 +75,13 @@ class hidden_layer:
                          
         def init_paramaters(self) -> None:
                 self._outgoing_weights = numpy.random.randn(self._input_size, self._output_size)
-                self._biases = numpy.zeros(self._input_size)
+                self._biases = numpy.ones(self._input_size)
                 
         def front(self, layer_input_array: numpy.ndarray) -> None:
-                linear_output: numpy.ndarray = numpy.dot(layer_input_array, self._outgoing_weights) + self._biases
+                input_after_biases = layer_input_array + self._biases
+                print(f"Biases: {self._biases}")
+                print(f"After applying biases: {input_after_biases}")
+                linear_output: numpy.ndarray = numpy.dot(layer_input_array, self._outgoing_weights)
                 
                 self._layer_input_array = layer_input_array
                 self._pre_activation_output = linear_output
@@ -119,7 +122,7 @@ class output_layer:
         
                 
         def init_paramaters(self) -> None:
-                self._biases = numpy.zeros(self._input_size)
+                self._biases = numpy.ones(self._input_size)
                 
         def calcualte_output(self, layer_input_array: numpy.ndarray) -> None:
                 self._pre_activation_output_array = layer_input_array + self._biases
