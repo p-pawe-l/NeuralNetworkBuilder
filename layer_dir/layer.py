@@ -254,7 +254,10 @@ class hidden_layer:
         Helper method to reset paramaters using single function
         """                
         def reset_parameters(self) -> None:
+                # Reseting weights
                 self.reset_weights()
+                
+                # Reseting biases
                 self.reset_biases()
                 
                 
