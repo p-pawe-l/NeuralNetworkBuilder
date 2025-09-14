@@ -1,35 +1,37 @@
 from . import layer
 
 
-class layer_factor:
+class LayerFactory:
         
         @staticmethod
-        def build_input_layer(input_size: int, output_size: int) -> layer.input_layer:
-                input_layer: layer.input_layer = layer.input_layer(
+        def build_input_layer(input_size: int, output_size: int) -> layer.InputLayer:
+                input_layer: layer.InputLayer = layer.InputLayer(
                         input_size=input_size,
                         output_size=output_size
                 )
                 
-                input_layer.init_paramaters()
+                input_layer.init_parameters()
                 return input_layer
                 
         @staticmethod
-        def build_hidden_layer(input_size: int, output_size: int, activation_function) -> layer.hidden_layer:
-                hidden_layer: layer.hidden_layer = layer.hidden_layer(
+        def build_hidden_layer(input_size: int, output_size: int, activation_function, derivative_function) -> layer.HiddenLayer:
+                hidden_layer: layer.HiddenLayer = layer.HiddenLayer(
                         input_size=input_size,
                         output_size=output_size,
-                        activation_function=activation_function
+                        activation_function=activation_function,
+                        derivative_function=derivative_function
                 )
                 
-                hidden_layer.init_paramaters()
+                hidden_layer.init_parameters()
                 return hidden_layer
                 
         @staticmethod
-        def build_output_layer(input_size: int, activation_function) -> layer.output_layer:
-                output_layer: layer.output_layer = layer.output_layer(
+        def build_output_layer(input_size: int, activation_function, derivative_function) -> layer.OutputLayer:
+                output_layer: layer.OutputLayer = layer.OutputLayer(
                         input_size=input_size,
-                        activation_function=activation_function
+                        activation_function=activation_function,
+                        derivative_function=derivative_function
                 )
                 
-                output_layer.init_paramaters()
+                output_layer.init_biases()
                 return output_layer

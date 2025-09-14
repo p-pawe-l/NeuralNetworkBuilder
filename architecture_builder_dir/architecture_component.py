@@ -3,7 +3,7 @@ import activation_function_dir.activation_functions as activation_functions
 class IncorrectUnitsNumberError(Exception):
         pass
 
-class architecture_component:
+class ArchitectureComponent:
         def __init__(self, units: int, activation_function = None, derivative_function = None) -> None:
                 if units < 0:
                         raise IncorrectUnitsNumberError

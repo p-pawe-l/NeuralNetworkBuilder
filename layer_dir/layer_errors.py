@@ -38,3 +38,8 @@ class NoActivationFunctionError(Exception):
         """
         """
         pass
+
+class EmptyLayerOutputMatrixError(Exception):
+        """
+        """
+        pass
